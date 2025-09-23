@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login Page</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('Screenshot_2025_0910_201855.jpg') no-repeat center center/cover;
+            z-index: -1;
+            filter: brightness(0.7);
+        }
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(41, 41, 60, 0.3);
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.21);
+            text-align: center;
+            min-width: 320px;
+        }
+        h2 {
+            color: #fff;
+            margin-bottom: 22px;
+            font-weight: 400;
+        }
+        input[type="email"], input[type="password"] {
+            width: 90%;
+            padding: 10px 14px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: rgba(255,255,255,0.9);
+            outline: none;
+        }
+        button[type="submit"] {
+            width: 94%;
+            padding: 12px 0;
+            margin-top: 14px;
+            background: #ffaa98;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: #ff8c7a;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            color: #fff;
+            font-size: 0.97rem;
+        }
+        .options a {
+            color: #ffbfae;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .options a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="login-container">
+        <form id="loginForm">
+            <h2>Have an account?</h2>
+            <input type="email" placeholder="Enter Email" id="email" required />
+            <input type="password" placeholder="Password" id="password" required />
+            <button type="submit">SIGN IN</button>
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="rememberMe" />
+                    Remember Me
+                </label>
+                <a id="forgotPassword">Forgot Password?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Auto-fill remembered values
+        window.onload = function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            const rememberedPassword = localStorage.getItem('rememberedPassword');
+            const rememberChecked = localStorage.getItem('rememberMeChecked');
+
+            if (rememberedEmail && rememberedPassword && rememberChecked === "true") {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('password').value = rememberedPassword;
+                document.getElementById('rememberMe').checked = true;
+            }
+        };
+
+        document.getElementById('loginForm').addEventListener('submit', function(e){
+            e.preventDefault();
+
+            const emailInput = document.getElementById('email').value;
+            const passwordInput = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const registeredEmail = localStorage.getItem('registeredEmail');
+            const registeredPassword = localStorage.getItem('registeredPassword');
+
+            const adminEmail = localStorage.getItem('adminEmail');
+            const adminPassword = localStorage.getItem('adminPassword');
+
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', emailInput);
+                localStorage.setItem('rememberedPassword', passwordInput);
+                localStorage.setItem('rememberMeChecked', "true");
+            } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
+                localStorage.setItem('rememberMeChecked', "false");
+            }
+
+            if(emailInput === registeredEmail && passwordInput === registeredPassword){
+                alert("Login successful as User.");
+                window.location.href = "b.html";
+            } else if(emailInput === adminEmail && passwordInput === adminPassword){
+                alert("Login successful as Admin.");
+                window.location.href = "adminlogin.html"; 
+            } else {
+                alert("Invalid email or password. Please try again.");
+            }
+        });
+
+        // Forgot Password
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            const emailPrompt = prompt("Enter your registered email to reset password:");
+            if(emailPrompt) {
+                const registeredEmail = localStorage.getItem('registeredEmail');
+                const adminEmail = localStorage.getItem('adminEmail');
+
+                if(emailPrompt === registeredEmail || emailPrompt === adminEmail){
+                    localStorage.setItem('resetEmail', emailPrompt); 
+                    alert("A password reset link has been sent to " + emailPrompt + ". Redirecting to reset page...");
+                    window.location.href = "reset.html"; 
+                } else {
+                    alert("This email is not registered with us.");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

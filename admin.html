@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blood Bank Admin Dashboard</title>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f1f1f1;color:#333;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background-color:#33bfa7;color:#fff;padding-top:20px;}
+.sidebar h2{text-align:center;margin-bottom:30px;font-weight:700;}
+.sidebar ul{list-style:none;padding-left:20px;}
+.sidebar ul li{margin-bottom:18px;font-size:17px;}
+.sidebar ul li a{color:white;text-decoration:none;display:block;}
+.sidebar ul li a:hover{text-decoration:underline;}
+.main{margin-left:220px;padding:20px 30px;}
+.header{font-weight:700;font-size:20px;display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.cards-container{display:flex;flex-direction:column;gap:20px;}
+.cards-row{display:flex;gap:16px;}
+.card{background:#ebebeb;border-radius:15px;width:120px;height:65px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:1px 1px 6px #bbb;font-weight:700;}
+.card .blood-group{color:purple;font-size:18px;}
+.card .blood-icon{color:#d30000;}
+.card .count{font-size:16px;font-weight:normal;}
+.info-row{margin-top:20px;display:flex;gap:14px;}
+.info-card{min-width:160px;height:65px;background:#ebebeb;border-radius:15px;font-weight:600;font-size:15px;display:flex;justify-content:center;align-items:center;box-shadow:1px 1px 6px #bbb;color:#222;cursor:pointer;}
+.info-card:hover{background:#d1e5e0;}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <h2>ADMIN</h2>
+  <ul>
+    <li><a href="b.html">Home</a></li>
+    <li><a href="donar.html">Donor</a></li>
+<li><a href="approved.html">Approved Donars</a></li>
+    <li><a href="bloodrequests.html">Blood Request</a></li>
+    <li><a href="approvedetails.html">Approve Request</a></li>
+    <li><a href="#" id="logoutAdmin">Logout</a></li>
+  </ul>
+</nav>
+
+<div class="main">
+  <header class="header">
+    <span>BLOOD DASHBOARD</span>
+  </header>
+
+  <div class="cards-container">
+    <div class="cards-row" id="upperRow"></div>
+    <div class="cards-row" id="lowerRow"></div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-card">
+      Total Donors <span class="icon-user icon"></span>: <strong id="donorCount">0</strong>
+    </div>
+    <div class="info-card">
+      Total Requests <span class="icon-requests icon"></span>: <strong id="requestCount">0</strong>
+    </div>
+    <div class="info-card" id="approvedCountCard" title="Click to view approved donors">
+      Approved Requests: <strong id="approvedCount">0</strong>
+    </div>
+  </div>
+</div>
+
+<script>
+const bloodGroups=["A+","B+","O-","O+","AB+","AB-","A-","B-"];
+
+function createCard(type,count){
+  const card=document.createElement("div");
+  card.className="card";
+
+  const groupSpan=document.createElement("span");
+  groupSpan.className="blood-group";
+  groupSpan.textContent=type;
+
+  const dropSpan=document.createElement("span");
+  dropSpan.className="blood-icon";
+  dropSpan.textContent="🩸";
+
+  const groupWrapper=document.createElement("div");
+  groupWrapper.style.display="flex";
+  groupWrapper.style.alignItems="center";
+  groupWrapper.style.justifyContent="center";
+  groupWrapper.style.gap="5px";
+  groupWrapper.appendChild(groupSpan);
+  groupWrapper.appendChild(dropSpan);
+
+  const countSpan=document.createElement("span");
+  countSpan.className="count";
+  countSpan.textContent=count;
+
+  card.appendChild(groupWrapper);
+  card.appendChild(countSpan);
+  return card;
+}
+
+function loadDashboard(){
+  let bloodData=JSON.parse(localStorage.getItem("bloodData"))||{};
+  let totalDonors=parseInt(localStorage.getItem("totalDonors"))||0;
+  let totalRequests=parseInt(localStorage.getItem("totalRequests"))||0;
+  let approvedCount=parseInt(localStorage.getItem("approvedCount"))||0;
+
+  document.getElementById("donorCount").textContent=totalDonors;
+  document.getElementById("requestCount").textContent=totalRequests;
+  document.getElementById("approvedCount").textContent=approvedCount;
+
+  const upperRow=document.getElementById("upperRow");
+  const lowerRow=document.getElementById("lowerRow");
+  upperRow.innerHTML="";
+  lowerRow.innerHTML="";
+
+  bloodGroups.forEach((type,index)=>{
+    const count=bloodData[type]||0;
+    const card=createCard(type,count);
+    if(index<4){upperRow.appendChild(card);}
+    else{lowerRow.appendChild(card);}
+  });
+}
+
+window.onload=loadDashboard;
+
+// Add click listener to approved request card
+document.getElementById("approvedCountCard").addEventListener("click", () => {
+  
+});
+
+// Admin logout functionality
+document.getElementById("logoutAdmin").addEventListener("click", function(e){
+  e.preventDefault();
+  // Clear all stored data related to login
+  localStorage.removeItem("registeredEmail");
+  localStorage.removeItem("registeredPassword");
+  localStorage.removeItem("bloodData");
+  localStorage.removeItem("totalDonors");
+  localStorage.removeItem("totalRequests");
+  localStorage.removeItem("approvedCount");
+
+  // Redirect to alert page
+  window.location.href = "alert.html";
+});
+</script>
+</body>
+</html>
+

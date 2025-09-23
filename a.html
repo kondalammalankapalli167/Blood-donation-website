@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blood Bank Home</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; }
+    .navbar {
+      background: #fff;
+      box-shadow: 0 2px 5px #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 30px;
+    }
+    .logo { font-weight: bold; color: #d80000; }
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+    .navbar ul li {
+      display: inline;
+    }
+    .navbar ul a {
+      text-decoration: none;
+      color: #222;
+      padding: 6px 10px;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .navbar ul a:hover,
+    .navbar ul .active {
+      background: #d80000;
+      color: #fff;
+    }
+    .right-btns {
+      display: flex;
+      align-items: center;
+    }
+    .right-btns a {
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 8px;
+      transition: background 0.2s;
+    }
+    .right-btns a:hover {
+      background: #d80000;
+    }
+    .main-img {
+      width: 100%;
+      max-width: 700px;
+      display: block;
+      margin: 40px auto 0 auto;
+      box-shadow: 0 4px 24px #ccc;
+      border-radius: 12px;
+    }
+    .center-banner {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="logo">🩸 BLOOD BANK</span>
+    <ul>
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+    <div class="right-btns">
+      <a href="register.html" id="newAccountBtn">New Account</a>
+      <a href="login.html" id="l">Login</a>
+    </div>
+  </div>
+
+  <div class="center-banner">
+    <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT0ubThmGrNAlbHTS2KkOserTeXiE0CsZI7_9TV8JXF24xYc-Tl"
+         alt="Save a Life, Give Blood" class="main-img" />
+  </div>
+</body>
+</html>
+

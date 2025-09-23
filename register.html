@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Blood Bank - Donor Registration</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #080710;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    .background {
+      width: 430px;
+      height: 520px;
+      position: absolute;
+      transform: translate(-50%,-50%);
+      left: 50%;
+      top: 50%;
+    }
+    .background .shape {
+      height: 200px;
+      width: 200px;
+      position: absolute;
+      border-radius: 50%;
+    }
+    .shape:first-child {
+      background: linear-gradient(#1845ad, #23a2f6);
+      left: -80px;
+      top: -80px;
+    }
+    .shape:last-child {
+      background: linear-gradient(to right, #ff512f, #f09819);
+      right: -30px;
+      bottom: -80px;
+    }
+    form {
+      height: 520px;
+      width: 400px;
+      background-color: rgba(255,255,255,0.13);
+      position: absolute;
+      transform: translate(-50%,-50%);
+      top: 50%;
+      left: 50%;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 40px rgba(8,7,16,0.6);
+      padding: 30px 35px;
+    }
+    form h3 {
+      font-size: 28px;
+      font-weight: 500;
+      text-align: center;
+      color: white;
+    }
+    input {
+      display: block;
+      height: 45px;
+      width: 100%;
+      background-color: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      padding: 0 10px;
+      margin-top: 15px;
+      font-size: 14px;
+      color: white;
+    }
+    ::placeholder { color: #e5e5e5; }
+    .submit {
+      margin-top: 25px;
+      width: 50%;
+      background-color: green;
+      color: #fff;
+      padding: 10px 0;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 70px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <form id="donorForm">
+    <h3>Register as Donor</h3>
+    <input type="text" placeholder="Name" id="name" required>
+    <input type="text" placeholder="Address" id="address" required>
+    <input type="email" placeholder="Email" id="email" required>
+    <input type="text" placeholder="Phone Number" id="number" required>
+    <input type="text" placeholder="Pin Code" id="pincode" required>
+    <input type="password" placeholder="Password" id="password" required>
+    <input type="submit" class="submit" value="Register"/>
+  </form>
+
+  <script>
+    document.getElementById('donorForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      // Store values in localStorage for demo purposes only
+      localStorage.setItem('registeredEmail', email);
+      localStorage.setItem('registeredPassword', password);
+      alert("Registration successful! Please login now.");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
+

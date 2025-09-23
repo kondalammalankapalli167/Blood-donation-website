@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reset Password</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2d2d3f;
+        }
+        .reset-container {
+            background: #fff;
+            padding: 30px 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 4px 20px rgba(0,0,0,0.25);
+            width: 320px;
+        }
+        h2 {
+            margin-bottom: 18px;
+            color: #333;
+        }
+        input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        button {
+            width: 94%;
+            padding: 12px 0;
+            margin-top: 14px;
+            background: #ffaa98;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff8c7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <h2>Reset Password</h2>
+        <form id="resetForm">
+            <input type="password" id="newPassword" placeholder="Enter new password" required />
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required />
+            <button type="submit">Update Password</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', function(e){
+            e.preventDefault();
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const resetEmail = localStorage.getItem('resetEmail');
+
+            if(newPassword !== confirmPassword){
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if(resetEmail){
+                if(resetEmail === localStorage.getItem('registeredEmail')){
+                    localStorage.setItem('registeredPassword', newPassword);
+                } else if(resetEmail === localStorage.getItem('adminEmail')){
+                    localStorage.setItem('adminPassword', newPassword);
+                }
+
+                alert("Password successfully updated for " + resetEmail + ". Please login again.");
+                localStorage.removeItem('resetEmail');
+                window.location.href = "login.html";
+            } else {
+                alert("No email found for reset process.");
+            }
+        });
+    </script>
+</body>
+</html>
+

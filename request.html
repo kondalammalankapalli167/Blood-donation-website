@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Request Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #bde1f7; }
+    .container { position: relative; width: 100vw; height: 100vh; }
+    .form-card { position: absolute; top: 40px; right: 40px; width: 340px; background: #ffe473;
+      border-radius: 10px; box-shadow: 5px 7px 6px rgba(0,0,0,0.18); padding: 25px 30px; }
+    .form-card h2 { text-align: center; }
+    label { display: flex; flex-direction: column; margin-bottom: 15px; }
+    input, select { padding: 7px; border-radius: 5px; border: none; }
+    button { background: #49f1c9; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #2ed5ae; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form class="form-card" id="bloodRequestForm">
+      <h2>Blood Request Form</h2>
+      <label>
+        Patient Name:
+        <input type="text" id="patientName" required>
+      </label>
+      <label>
+        Hospital:
+        <input type="text" id="hospitalName" required>
+      </label>
+      <label>
+        Blood Type:
+        <select id="bloodType" required>
+          <option value="">Select</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>O+</option><option>O-</option>
+          <option>AB+</option><option>AB-</option>
+        </select>
+      </label>
+      <label>
+        Unit:
+        <input type="number" id="bloodUnit" min="1" required>
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("bloodRequestForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      let request = {
+        patient: document.getElementById("patientName").value,
+        hospital: document.getElementById("hospitalName").value,
+        blood: document.getElementById("bloodType").value,
+        unit: document.getElementById("bloodUnit").value + " ml"
+      };
+
+      // Save to localStorage
+      let requests = JSON.parse(localStorage.getItem("bloodRequests")) || [];
+      requests.push(request);
+      localStorage.setItem("bloodRequests", JSON.stringify(requests));
+
+      // Increment total requests
+      let totalRequests = parseInt(localStorage.getItem("totalRequests")) || 0;
+      totalRequests++;
+      localStorage.setItem("totalRequests", totalRequests);
+
+      alert("Blood Request Submitted Successfully!");
+      window.location.href = "admin.html"; // redirect to admin dashboard
+    });
+  </script>
+</body>
+</html>
+

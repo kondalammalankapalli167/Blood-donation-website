@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blood Bank</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; }
+    .navbar {
+      background: #fff;
+      box-shadow: 0 2px 5px #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 30px;
+    }
+    .logo { font-weight: bold; color: #d80000; }
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+    .navbar ul li { display: inline; }
+    .navbar ul a {
+      text-decoration: none;
+      color: #222;
+      padding: 6px 10px;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .navbar ul a:hover,
+    .navbar ul .active {
+      background: #d80000;
+      color: #fff;
+    }
+    .logout-btn {
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 3px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover { background: #d80000; }
+    .center-banner {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .center-banner img {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="logo">🩸 BLOOD BANK</span>
+    <ul>
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="donate.html">Donate</a></li>
+      <li><a href="request.html">Request</a></li>
+    </ul>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="center-banner">
+    <img src="https://joyalukkasindia.wordpress.com/wp-content/uploads/2017/06/save-a-life-give-blood-joyalukkas.jpg" alt="Save a Life, Give Blood" />
+  </div>
+
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      // Remove saved email & password
+      localStorage.removeItem('registeredEmail');
+      localStorage.removeItem('registeredPassword');
+      // Redirect to alert page
+      window.location.href = "alert.html";
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Blood Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
+    .sidebar { width: 220px; background: #2bbbad; height: 100vh; position: fixed; top:0; left:0; padding-top:20px; color:white; }
+    .sidebar h2 { text-align:center; margin-bottom:20px; }
+    .sidebar a { display:block; padding:12px 20px; text-decoration:none; color:white; }
+    .sidebar a:hover { background:#26a69a; }
+    .main-content { margin-left:220px; padding:20px; }
+    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    th,td { padding:12px; border:1px solid #ddd; text-align:center; }
+    th { background:#2bbbad; color:white; }
+    .btn { padding:6px 12px; border:none; border-radius:4px; cursor:pointer; color:white; }
+    .btn-approve{background:green;} .btn-reject{background:red;} .btn-delete{background:blue;}
+    .action-buttons{display:flex;justify-content:center;gap:6px;}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="admin.html">Home</a>
+    <a href="bloodrequests.html">Blood Request</a>
+    <a href="approvedetails.html">Approve Details</a>
+    <a href="#" id="logoutBloodReq">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h2>REQUEST DETAILS:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Hospital</th>
+          <th>Blood Type</th>
+          <th>Blood Unit</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="requestTableBody">
+        <!-- Dynamic rows go here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function loadRequests() {
+      let requests = JSON.parse(localStorage.getItem("bloodRequests")) || [];
+      let tbody = document.getElementById("requestTableBody");
+      tbody.innerHTML = ""; // Clear table
+
+      if (requests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">No pending blood requests found</td></tr>`;
+        return;
+      }
+
+      requests.forEach((req, index) => {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${req.patient}</td>
+          <td>${req.hospital}</td>
+          <td>${req.blood}</td>
+          <td>${req.unit}</td>
+          <td class="action-buttons">
+            <button class="btn btn-approve">Approve</button>
+            <button class="btn btn-reject">Reject</button>
+            <button class="btn btn-delete">Delete</button>
+          </td>
+        `;
+
+        row.querySelector(".btn-approve").addEventListener("click", () => approveRequest(req));
+        row.querySelector(".btn-reject").addEventListener("click", () => rejectRequest(req));
+        row.querySelector(".btn-delete").addEventListener("click", () => deleteRequest(index));
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function approveRequest(request) {
+      let approved = JSON.parse(localStorage.getItem("approvedRequests")) || [];
+      approved.push(request);
+      localStorage.setItem("approvedRequests", JSON.stringify(approved));
+      alert(request.patient + "'s request approved (but kept in this page too).");
+    }
+
+    function rejectRequest(request) {
+      let rejected = JSON.parse(localStorage.getItem("rejectedRequests")) || [];
+      rejected.push(request);
+      localStorage.setItem("rejectedRequests", JSON.stringify(rejected));
+      alert(request.patient + "'s request rejected (but not removed from pending).");
+    }
+
+    function deleteRequest(index) {
+      let requests = JSON.parse(localStorage.getItem("bloodRequests")) || [];
+      let patient = requests[index].patient;
+      requests.splice(index, 1); // delete permanently
+      localStorage.setItem("bloodRequests", JSON.stringify(requests));
+      loadRequests();
+      alert(patient + "'s request deleted permanently!");
+    }
+
+    // Initial load
+    loadRequests();
+
+    // Logout functionality
+    document.getElementById("logoutBloodReq").addEventListener("click", function(e) {
+      e.preventDefault();
+      // Clear stored data
+      localStorage.removeItem("registeredEmail");
+      localStorage.removeItem("registeredPassword");
+      localStorage.removeItem("bloodRequests");
+      localStorage.removeItem("approvedRequests");
+      localStorage.removeItem("rejectedRequests");
+      localStorage.removeItem("donors");
+      localStorage.removeItem("approvedDonors");
+      localStorage.removeItem("bloodData");
+      localStorage.removeItem("totalDonors");
+      localStorage.removeItem("totalRequests");
+      localStorage.removeItem("approvedCount");
+
+      // Redirect to alert.html
+      window.location.href = "alert.html";
+    });
+  </script>
+</body>
+</html>
+
