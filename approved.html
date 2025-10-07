@@ -63,77 +63,86 @@
 </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Admin</h2>
-    <ul>
-      <li><a href="admin.html">Home</a></li>
-      <li><a href="donar.html">Donor</a></li>
-      <li><a href="approved.html">Approved Donors</a></li>
-      <li><a href="#" id="logoutApproved">Logout</a></li>
-    </ul>
-  </div>
+<div class="sidebar">
+  <h2>Admin</h2>
+  <ul>
+    <li><a href="admin.html">Home</a></li>
+    <li><a href="donar.html">Donor</a></li>
+    <li><a href="approved.html">Approved Donors</a></li>
+    <li><a href="#" id="logoutApproved">Logout</a></li>
+  </ul>
+</div>
 
-  <div class="main">
-    <h2>APPROVED DONORS:</h2>
-    <table id="approvedTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Blood Group</th>
-          <th>Address</th>
-          <th>Contact</th>
-          <th>Hospital</th>
-          <th>Diseases</th>
-          <th>DOB</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+<div class="main">
+  <h2>APPROVED DONORS:</h2>
+  <table id="approvedTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Blood Group</th>
+        <th>Address</th>
+        <th>Contact</th>
+        <th>Hospital</th>
+        <th>Diseases</th>
+        <th>DOB</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  const approvedDonors = JSON.parse(localStorage.getItem("approvedDonors")) || [];
+  // 🔥 Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+    authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+    databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+    projectId: "blood-donation-website-c7a25",
+    storageBucket: "blood-donation-website-c7a25.appspot.com",
+    messagingSenderId: "380005737107",
+    appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
   const tableBody = document.querySelector("#approvedTable tbody");
 
-  function renderApprovedTable() {
-    if (approvedDonors.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="7">No approved donors found</td></tr>`;
-      return;
-    }
+  // 🔹 Load only approved donors
+  function loadApprovedDonors() {
     tableBody.innerHTML = "";
-    approvedDonors.forEach(donor => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${donor.name}</td>
-        <td>${donor.bloodGroup}</td>
-        <td>${donor.address}</td>
-        <td>${donor.contact}</td>
-        <td>${donor.hospital}</td>
-        <td>${donor.diseases}</td>
-        <td>${donor.dob}</td>
-      `;
-      tableBody.appendChild(row);
+    db.ref("approvedDonors").on("value", (snapshot) => {
+      const donors = snapshot.val();
+      if (!donors) {
+        tableBody.innerHTML = `<tr><td colspan="7">No approved donors found</td></tr>`;
+        return;
+      }
+      tableBody.innerHTML = "";
+      Object.values(donors).forEach(donor => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${donor.name || ''}</td>
+          <td>${donor.blood_group || ''}</td>
+          <td>${donor.address || ''}</td>
+          <td>${donor.contact || ''}</td>
+          <td>${donor.hospital || ''}</td>
+          <td>${donor.diseases || ''}</td>
+          <td>${donor.dob || ''}</td>
+        `;
+        tableBody.appendChild(row);
+      });
     });
   }
-  renderApprovedTable();
 
-  // Logout functionality
-  document.getElementById("logoutApproved").addEventListener("click", function(e) {
+  // 🚪 Logout
+  document.getElementById("logoutApproved").addEventListener("click", (e) => {
     e.preventDefault();
-    // Clear all relevant data
-    localStorage.removeItem("registeredEmail");
-    localStorage.removeItem("registeredPassword");
-    localStorage.removeItem("donors");
-    localStorage.removeItem("approvedDonors");
-    localStorage.removeItem("bloodData");
-    localStorage.removeItem("totalDonors");
-    localStorage.removeItem("totalRequests");
-    localStorage.removeItem("approvedCount");
-
-    // Redirect to alert page
+    localStorage.clear();
     window.location.href = "alert.html";
   });
+
+  loadApprovedDonors();
 </script>
 </body>
 </html>
-

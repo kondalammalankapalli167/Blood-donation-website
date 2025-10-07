@@ -1,101 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Approved Blood Requests</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; display: flex; }
-    .sidebar { width: 220px; background: #2db39c; color: #fff; height: 100vh; padding: 20px 0; position: fixed; }
-    .sidebar h2 { text-align: center; margin-bottom: 30px; }
-    .sidebar ul { list-style: none; padding: 0; }
-    .sidebar ul li { padding: 12px 20px; cursor: pointer; }
+    body { margin:0; font-family:Arial,sans-serif; background:#f8f9fa; }
+    .sidebar { position:fixed; top:0; left:0; width:200px; height:100%; background:#2ab7a9; color:white; padding-top:20px; }
+    .sidebar h2 { text-align:center; margin-bottom:30px; }
+    .sidebar ul { list-style:none; padding-left:0; }
+    .sidebar ul li { padding:12px 20px; cursor:pointer; }
+    .sidebar ul li:hover { background:#219085; }
     .sidebar ul li a { color:white; text-decoration:none; display:block; }
-    .sidebar ul li:hover { background:#24907e; }
-    .main-content { margin-left: 220px; padding: 20px; width: 100%; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; background:white; box-shadow:0px 2px 6px rgba(0,0,0,0.2); }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    th { background-color: #f4f4f4; }
+    .main { margin-left:200px; padding:20px; }
+    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    th, td { padding:10px; border:1px solid #ddd; text-align:center; }
+    th { background:#efefef; }
   </style>
 </head>
 <body>
-
-  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Admin</h2>
     <ul>
       <li><a href="admin.html">Home</a></li>
-      <li><a href="bloodrequests.html">Blood Request</a></li>
-      <li><a href="approvedetails.html">Approve Details</a></li>
-      <li><a href="#" id="logoutApprovedReq">Logout</a></li>
+      <li><a href="bloodrequests.html">Blood Requests</a></li>
+      <li><a href="#" id="logoutApproved">Logout</a></li>
     </ul>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <h2>Blood Request</h2>
-    <h3>APPROVED DETAILS:</h3>
-
+  <div class="main">
+    <h2>Approved Blood Requests</h2>
     <table>
       <thead>
         <tr>
           <th>Patient Name</th>
-          <th>Hospital Name</th>
+          <th>Hospital</th>
           <th>Blood Type</th>
           <th>Blood Unit</th>
         </tr>
       </thead>
-      <tbody id="approvedTableBody">
-        <!-- Dynamic approved requests will load here -->
-      </tbody>
+      <tbody id="approvedTableBody"></tbody>
     </table>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
-    function loadApproved() {
-      let approved = JSON.parse(localStorage.getItem("approvedRequests")) || [];
-      let tbody = document.getElementById("approvedTableBody");
-      tbody.innerHTML = "";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+      authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+      databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+      projectId: "blood-donation-website-c7a25",
+      storageBucket: "blood-donation-website-c7a25.appspot.com",
+      messagingSenderId: "380005737107",
+      appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+    };
 
-      if (approved.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4">No approved requests found</td></tr>`;
-        return;
-      }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-      approved.forEach(req => {
-        let row = `
-          <tr>
-            <td>${req.patient}</td>
-            <td>${req.hospital}</td>
-            <td>${req.blood}</td>
-            <td>${req.unit}</td>
-          </tr>
-        `;
-        tbody.innerHTML += row;
+    function loadApprovedRequests() {
+      const tbody = document.getElementById("approvedTableBody");
+      db.ref("approvedRequests").on("value", snapshot => {
+        const approved = snapshot.val();
+        tbody.innerHTML = "";
+        if (!approved) {
+          tbody.innerHTML = "<tr><td colspan='4'>No approved requests found.</td></tr>";
+          return;
+        }
+        Object.values(approved).forEach(req => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${req.patient || ''}</td>
+            <td>${req.hospital || ''}</td>
+            <td>${req.blood || ''}</td>
+            <td>${req.unit || ''}</td>
+          `;
+          tbody.appendChild(row);
+        });
       });
     }
 
-    loadApproved();
-
-    // Logout functionality
-    document.getElementById("logoutApprovedReq").addEventListener("click", function(e) {
+    document.getElementById("logoutApproved").addEventListener("click", e => {
       e.preventDefault();
-      // Clear login and requests data
-      localStorage.removeItem("registeredEmail");
-      localStorage.removeItem("registeredPassword");
-      localStorage.removeItem("approvedRequests");
-      localStorage.removeItem("donors");
-      localStorage.removeItem("approvedDonors");
-      localStorage.removeItem("bloodData");
-      localStorage.removeItem("totalDonors");
-      localStorage.removeItem("totalRequests");
-      localStorage.removeItem("approvedCount");
-
-      // Redirect to alert.html
       window.location.href = "alert.html";
     });
-  </script>
 
+    loadApprovedRequests();
+  </script>
 </body>
 </html>
-

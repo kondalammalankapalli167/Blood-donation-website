@@ -98,7 +98,24 @@
         </form>
     </div>
 
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+            authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+            databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+            projectId: "blood-donation-website-c7a25",
+            storageBucket: "blood-donation-website-c7a25.appspot.com",
+            messagingSenderId: "380005737107",
+            appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         // Auto-fill remembered values
         window.onload = function() {
             const rememberedEmail = localStorage.getItem('rememberedEmail');
@@ -112,19 +129,15 @@
             }
         };
 
-        document.getElementById('loginForm').addEventListener('submit', function(e){
+        // Login form submit
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const emailInput = document.getElementById('email').value;
-            const passwordInput = document.getElementById('password').value;
+            const emailInput = document.getElementById('email').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
             const rememberMe = document.getElementById('rememberMe').checked;
 
-            const registeredEmail = localStorage.getItem('registeredEmail');
-            const registeredPassword = localStorage.getItem('registeredPassword');
-
-            const adminEmail = localStorage.getItem('adminEmail');
-            const adminPassword = localStorage.getItem('adminPassword');
-
+            // Remember me feature
             if (rememberMe) {
                 localStorage.setItem('rememberedEmail', emailInput);
                 localStorage.setItem('rememberedPassword', passwordInput);
@@ -135,35 +148,64 @@
                 localStorage.setItem('rememberMeChecked', "false");
             }
 
-            if(emailInput === registeredEmail && passwordInput === registeredPassword){
-                alert("Login successful as User.");
-                window.location.href = "b.html";
-            } else if(emailInput === adminEmail && passwordInput === adminPassword){
-                alert("Login successful as Admin.");
-                window.location.href = "adminlogin.html"; 
-            } else {
-                alert("Invalid email or password. Please try again.");
+            // Check Admin login
+            if (emailInput === "admin@gmail.com" && passwordInput === "admin123") {
+                alert("✅ Login successful as Admin.");
+                window.location.href = "adminlogin.html";
+                return;
             }
+
+            // Check donors in pendingDonors and approvedDonors
+            const donorNodes = ["pendingDonors", "approvedDonors"];
+            let found = false;
+
+            Promise.all(donorNodes.map(node => db.ref(node).once("value")))
+                .then(snapshots => {
+                    snapshots.forEach(snapshot => {
+                        snapshot.forEach(childSnapshot => {
+                            const donor = childSnapshot.val();
+                            if (donor.email === emailInput && donor.password === passwordInput) {
+                                found = true;
+                            }
+                        });
+                    });
+
+                    if (found) {
+                        alert("✅ Login successful as Donor.");
+                        window.location.href = "b.html";
+                    } else {
+                        alert("⚠️ Invalid email or password. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error reading data:", error);
+                    alert("⚠️ Unable to connect to the database.");
+                });
         });
 
         // Forgot Password
         document.getElementById('forgotPassword').addEventListener('click', function(e) {
             e.preventDefault();
             const emailPrompt = prompt("Enter your registered email to reset password:");
-            if(emailPrompt) {
-                const registeredEmail = localStorage.getItem('registeredEmail');
-                const adminEmail = localStorage.getItem('adminEmail');
+            if (emailPrompt) {
+                db.ref("donors").once("value")
+                    .then(snapshot => {
+                        let exists = false;
+                        snapshot.forEach(childSnapshot => {
+                            if (childSnapshot.val().email === emailPrompt) {
+                                exists = true;
+                            }
+                        });
 
-                if(emailPrompt === registeredEmail || emailPrompt === adminEmail){
-                    localStorage.setItem('resetEmail', emailPrompt); 
-                    alert("A password reset link has been sent to " + emailPrompt + ". Redirecting to reset page...");
-                    window.location.href = "reset.html"; 
-                } else {
-                    alert("This email is not registered with us.");
-                }
+                        if (exists || emailPrompt === "admin@gmail.com") {
+                            alert("🔗 Password reset link sent to " + emailPrompt);
+                            window.location.href = "reset.html";
+                        } else {
+                            alert("⚠️ This email is not registered with us.");
+                        }
+                    });
             }
         });
     </script>
 </body>
 </html>
-

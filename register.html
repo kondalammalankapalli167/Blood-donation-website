@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Blood Bank - Donor Registration</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       background-color: #080710;
@@ -66,6 +68,8 @@
       margin-top: 15px;
       font-size: 14px;
       color: white;
+      border: none;
+      outline: none;
     }
     ::placeholder { color: #e5e5e5; }
     .submit {
@@ -84,6 +88,7 @@
   </style>
 </head>
 <body>
+
   <div class="background">
     <div class="shape"></div>
     <div class="shape"></div>
@@ -94,24 +99,73 @@
     <input type="text" placeholder="Name" id="name" required>
     <input type="text" placeholder="Address" id="address" required>
     <input type="email" placeholder="Email" id="email" required>
-    <input type="text" placeholder="Phone Number" id="number" required>
+    <input type="text" placeholder="Phone Number" id="number" required pattern="[6-9]{1}[0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9">
     <input type="text" placeholder="Pin Code" id="pincode" required>
     <input type="password" placeholder="Password" id="password" required>
     <input type="submit" class="submit" value="Register"/>
   </form>
 
+  <!-- ✅ Firebase Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
+    // ✅ Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+      authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+      databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+      projectId: "blood-donation-website-c7a25",
+      storageBucket: "blood-donation-website-c7a25.appspot.com",
+      messagingSenderId: "380005737107",
+      appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+    };
+
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ✅ Handle form submission
     document.getElementById('donorForm').addEventListener('submit', function(e){
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      // Store values in localStorage for demo purposes only
-      localStorage.setItem('registeredEmail', email);
-      localStorage.setItem('registeredPassword', password);
-      alert("Registration successful! Please login now.");
-      window.location.href = "login.html";
+
+      // Get form data
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const number = document.getElementById('number').value.trim();
+      const pincode = document.getElementById('pincode').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // ✅ Validate phone number
+      if(!/^[6-9]\d{9}$/.test(number)) {
+        alert("⚠️ Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
+        return;
+      }
+
+      // ✅ Save donor in 'pendingDonors' (not in 'donors')
+      const donorData = {
+        name: name,
+        address: address,
+        email: email,
+        number: number,
+        pincode: pincode,
+        password: password,
+        status: "Pending"
+      };
+
+      db.ref("pendingDonors").push(donorData)  // 🔴 Changed node
+      .then(() => {
+        alert("✅ Registration submitted successfully! Awaiting admin approval.");
+        document.getElementById('donorForm').reset();
+        window.location.href = "login.html";
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        alert("⚠️ Failed to register donor. Please try again.");
+      });
     });
   </script>
+
 </body>
 </html>
-

@@ -27,12 +27,14 @@ body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background
 </style>
 </head>
 <body>
+
 <nav class="sidebar">
   <h2>ADMIN</h2>
   <ul>
     <li><a href="b.html">Home</a></li>
     <li><a href="donar.html">Donor</a></li>
-<li><a href="approved.html">Approved Donars</a></li>
+        <li><a href="approved.html">Approve Donor</a></li>
+    
     <li><a href="bloodrequests.html">Blood Request</a></li>
     <li><a href="approvedetails.html">Approve Request</a></li>
     <li><a href="#" id="logoutAdmin">Logout</a></li>
@@ -51,10 +53,10 @@ body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background
 
   <div class="info-row">
     <div class="info-card">
-      Total Donors <span class="icon-user icon"></span>: <strong id="donorCount">0</strong>
+      Total Donors : <strong id="donorCount">0</strong>
     </div>
     <div class="info-card">
-      Total Requests <span class="icon-requests icon"></span>: <strong id="requestCount">0</strong>
+      Total Requests : <strong id="requestCount">0</strong>
     </div>
     <div class="info-card" id="approvedCountCard" title="Click to view approved donors">
       Approved Requests: <strong id="approvedCount">0</strong>
@@ -62,82 +64,97 @@ body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
-const bloodGroups=["A+","B+","O-","O+","AB+","AB-","A-","B-"];
+  // ✅ Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+    authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+    databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+    projectId: "blood-donation-website-c7a25",
+    storageBucket: "blood-donation-website-c7a25.appspot.com",
+    messagingSenderId: "380005737107",
+    appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+  };
 
-function createCard(type,count){
-  const card=document.createElement("div");
-  card.className="card";
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  const groupSpan=document.createElement("span");
-  groupSpan.className="blood-group";
-  groupSpan.textContent=type;
+  const bloodGroups = ["A+","B+","O-","O+","AB+","AB-","A-","B-"];
 
-  const dropSpan=document.createElement("span");
-  dropSpan.className="blood-icon";
-  dropSpan.textContent="🩸";
+  function createCard(type, count){
+    const card = document.createElement("div");
+    card.className = "card";
+    const groupSpan = document.createElement("span");
+    groupSpan.className = "blood-group";
+    groupSpan.textContent = type;
+    const dropSpan = document.createElement("span");
+    dropSpan.className = "blood-icon";
+    dropSpan.textContent = "🩸";
+    const groupWrapper = document.createElement("div");
+    groupWrapper.style.display = "flex";
+    groupWrapper.style.alignItems = "center";
+    groupWrapper.style.justifyContent = "center";
+    groupWrapper.style.gap = "5px";
+    groupWrapper.appendChild(groupSpan);
+    groupWrapper.appendChild(dropSpan);
+    const countSpan = document.createElement("span");
+    countSpan.className = "count";
+    countSpan.textContent = count;
+    card.appendChild(groupWrapper);
+    card.appendChild(countSpan);
+    return card;
+  }
 
-  const groupWrapper=document.createElement("div");
-  groupWrapper.style.display="flex";
-  groupWrapper.style.alignItems="center";
-  groupWrapper.style.justifyContent="center";
-  groupWrapper.style.gap="5px";
-  groupWrapper.appendChild(groupSpan);
-  groupWrapper.appendChild(dropSpan);
+  function renderDashboard(bloodData, donorCount){
+    document.getElementById("donorCount").textContent = donorCount;
+    const upperRow = document.getElementById("upperRow");
+    const lowerRow = document.getElementById("lowerRow");
+    upperRow.innerHTML = "";
+    lowerRow.innerHTML = "";
+    bloodGroups.forEach((type, index) => {
+      const count = bloodData[type] || 0;
+      const card = createCard(type, count);
+      if(index < 4){ upperRow.appendChild(card); }
+      else { lowerRow.appendChild(card); }
+    });
+  }
 
-  const countSpan=document.createElement("span");
-  countSpan.className="count";
-  countSpan.textContent=count;
-
-  card.appendChild(groupWrapper);
-  card.appendChild(countSpan);
-  return card;
-}
-
-function loadDashboard(){
-  let bloodData=JSON.parse(localStorage.getItem("bloodData"))||{};
-  let totalDonors=parseInt(localStorage.getItem("totalDonors"))||0;
-  let totalRequests=parseInt(localStorage.getItem("totalRequests"))||0;
-  let approvedCount=parseInt(localStorage.getItem("approvedCount"))||0;
-
-  document.getElementById("donorCount").textContent=totalDonors;
-  document.getElementById("requestCount").textContent=totalRequests;
-  document.getElementById("approvedCount").textContent=approvedCount;
-
-  const upperRow=document.getElementById("upperRow");
-  const lowerRow=document.getElementById("lowerRow");
-  upperRow.innerHTML="";
-  lowerRow.innerHTML="";
-
-  bloodGroups.forEach((type,index)=>{
-    const count=bloodData[type]||0;
-    const card=createCard(type,count);
-    if(index<4){upperRow.appendChild(card);}
-    else{lowerRow.appendChild(card);}
+  // 🔹 Count donors and show blood group distribution
+  db.ref("donors").on("value", snapshot => {
+    const donors = snapshot.val() || {};
+    const donorCount = Object.keys(donors).length;
+    let bloodData = {};
+    Object.values(donors).forEach(donor => {
+      const bg = donor.blood_group || donor.bloodGroup;
+      if(bg) bloodData[bg] = (bloodData[bg] || 0) + 1;
+    });
+    renderDashboard(bloodData, donorCount);
   });
-}
 
-window.onload=loadDashboard;
+  // 🔹 Count total blood requests
+  db.ref("bloodRequests").on("value", snapshot => {
+    const requests = snapshot.val() || {};
+    const totalRequests = Object.keys(requests).length;
+    document.getElementById("requestCount").textContent = totalRequests;
+  });
 
-// Add click listener to approved request card
-document.getElementById("approvedCountCard").addEventListener("click", () => {
-  
-});
+  // 🔹 Count approved requests
+  db.ref("approvedRequests").on("value", snapshot => {
+    const approved = snapshot.val() || {};
+    const approvedCount = Object.keys(approved).length;
+    document.getElementById("approvedCount").textContent = approvedCount;
+  });
 
-// Admin logout functionality
-document.getElementById("logoutAdmin").addEventListener("click", function(e){
-  e.preventDefault();
-  // Clear all stored data related to login
-  localStorage.removeItem("registeredEmail");
-  localStorage.removeItem("registeredPassword");
-  localStorage.removeItem("bloodData");
-  localStorage.removeItem("totalDonors");
-  localStorage.removeItem("totalRequests");
-  localStorage.removeItem("approvedCount");
-
-  // Redirect to alert page
-  window.location.href = "alert.html";
-});
+  // 🔹 Logout
+  document.getElementById("logoutAdmin").addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = "alert.html";
+  });
 </script>
 </body>
 </html>
