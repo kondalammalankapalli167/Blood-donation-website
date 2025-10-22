@@ -4,33 +4,139 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Donor Details</title>
+
+<!-- Boxicons CDN -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
 <style>
-  body { margin:0; font-family: Arial, sans-serif; background:#f8f9fa; }
-  .sidebar { position:fixed; top:0; left:0; width:200px; height:100%; background:#2ab7a9; color:white; padding-top:20px; }
-  .sidebar h2 { text-align:center; margin-bottom:30px; }
-  .sidebar ul { list-style:none; padding-left:0; }
-  .sidebar ul li { padding:12px 20px; cursor:pointer; }
-  .sidebar ul li a { color:white; text-decoration:none; display:block; }
-  .sidebar ul li:hover { background:#219085; }
-  .main { margin-left:200px; padding:20px; }
-  h2 { margin-bottom:20px; }
-  table { width:100%; border-collapse:collapse; background:white; box-shadow:0px 2px 6px #ccc; }
-  th, td { padding:10px; border:1px solid #ddd; text-align:center; }
-  th { background:#efefef; }
-  .btn { padding:5px 10px; border:none; border-radius:5px; cursor:pointer; color:white; }
-  .btn-approve { background:green; }
-  .btn-reject { background:orange; }
-  .btn-delete { background:red; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 60px;
+  height: 100vh;
+  background-color:#33bfa7;
+  color: #fff;
+  padding: 20px 0;
+  overflow: hidden;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.4s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.sidebar:hover {
+  width: 200px;
+}
+.sidebar h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar:hover h2 {
+  opacity: 1;
+}
+.sidebar ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 0;
+}
+.sidebar ul li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+.sidebar ul li:hover {
+  background-color: #33bfa7;
+}
+.sidebar ul li a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.sidebar ul li a i {
+  font-size: 22px;
+  min-width: 30px;
+}
+.sidebar ul li a span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding-left: 8px;
+}
+.sidebar:hover ul li a span {
+  opacity: 1;
+}
+
+/* Main area */
+.main {
+  margin-left: 60px;
+  padding: 20px;
+  width: 100%;
+  transition: margin-left 0.4s ease;
+}
+.sidebar:hover ~ .main {
+  margin-left: 200px;
+}
+
+/* Table & Buttons */
+h2 {
+  margin-bottom: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0px 2px 6px #ccc;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+th {
+  background: #33bfa7;
+}
+.btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+.btn-approve { background: green; }
+.btn-reject { background: orange; }
+.btn-delete { background: red; }
 </style>
 </head>
+
 <body>
 
 <div class="sidebar">
   <h2>Donor</h2>
   <ul>
-    <li><a href="admin.html">Home</a></li>
-    <li><a href="#">Donor</a></li>
-    <li><a href="#" id="logoutDonarPage">Logout</a></li>
+    <li><a href="admin.html"><i class='bx bxs-home'></i><span>Home</span></a></li>
+    <li><a href="#"><i class='bx bx-user'></i><span>Donor</span></a></li>
+    <li><a href="#" id="logoutDonarPage"><i class='bx bx-log-out'></i><span>Logout</span></a></li>
   </ul>
 </div>
 
@@ -56,97 +162,98 @@
   </table>
 </div>
 
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
-  // 🔥 Firebase Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
-    authDomain: "blood-donation-website-c7a25.firebaseapp.com",
-    databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
-    projectId: "blood-donation-website-c7a25",
-    storageBucket: "blood-donation-website-c7a25.appspot.com",
-    messagingSenderId: "380005737107",
-    appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
-  };
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+  authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+  databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+  projectId: "blood-donation-website-c7a25",
+  storageBucket: "blood-donation-website-c7a25.appspot.com",
+  messagingSenderId: "380005737107",
+  appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+};
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const tableBody = document.querySelector("#donorTable tbody");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const tableBody = document.querySelector("#donorTable tbody");
 
-  // 🔹 Load all donors
-  function loadDonors() {
-    tableBody.innerHTML = "";
-    db.ref("donors").on("value", (snapshot) => {
-      const donors = snapshot.val();
-      if (!donors) {
-        tableBody.innerHTML = '<tr><td colspan="11">No donors found</td></tr>';
-        return;
-      }
-      tableBody.innerHTML = "";
-      Object.keys(donors).forEach((key) => {
-        const donor = donors[key];
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${donor.name || ''}</td>
-          <td>${donor.blood_group || ''}</td>
-          <td>${donor.address || ''}</td>
-          <td>${donor.contact || ''}</td>
-          <td>${donor.hospital || ''}</td>
-          <td>${donor.diseases || ''}</td>
-          <td>${donor.dob || ''}</td>
-          <td>${donor.status || 'Pending'}</td>
-          <td><button class="btn btn-approve" onclick="approveDonor('${key}')">Approve</button></td>
-          <td><button class="btn btn-reject" onclick="updateStatus('${key}','Rejected')">Reject</button></td>
-          <td><button class="btn btn-delete" onclick="deleteDonor('${key}')">Delete</button></td>
-        `;
-        tableBody.appendChild(row);
-      });
-    });
-  }
-
-  // ✅ Approve donor and save in approvedDonors
-  window.approveDonor = function(key) {
-    db.ref("donors/" + key).once("value").then(snapshot => {
-      const donor = snapshot.val();
-      if (donor) {
-        // Update status in donors
-        db.ref("donors/" + key + "/status").set("Approved");
-        // Push data to approvedDonors
-        db.ref("approvedDonors/" + key).set(donor)
-          .then(() => alert("Donor approved successfully!"))
-          .catch(err => alert("Error: " + err.message));
-      }
-    });
-  };
-
-  // ❌ Update status (Reject)
-  window.updateStatus = function(key, status) {
-    db.ref("donors/" + key + "/status").set(status)
-      .then(() => alert(`Donor ${status}`))
-      .catch((err) => alert("Error: " + err.message));
-  };
-
-  // 🗑️ Delete donor
-  window.deleteDonor = function(key) {
-    if (confirm("Are you sure you want to delete this donor?")) {
-      db.ref("donors/" + key).remove()
-        .then(() => {
-          db.ref("approvedDonors/" + key).remove(); // also remove if approved
-          alert("Donor deleted successfully");
-        })
-        .catch((err) => alert("Error: " + err.message));
+// Load donors
+function loadDonors() {
+  tableBody.innerHTML = "";
+  db.ref("donors").on("value", (snapshot) => {
+    const donors = snapshot.val();
+    if (!donors) {
+      tableBody.innerHTML = '<tr><td colspan="11">No donors found</td></tr>';
+      return;
     }
-  };
-
-  // 🚪 Logout
-  document.getElementById("logoutDonarPage").addEventListener("click", (e) => {
-    e.preventDefault();
-    localStorage.clear();
-    window.location.href = "alert.html";
+    tableBody.innerHTML = "";
+    Object.keys(donors).forEach((key) => {
+      const donor = donors[key];
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${donor.name || ''}</td>
+        <td>${donor.blood_group || ''}</td>
+        <td>${donor.address || ''}</td>
+        <td>${donor.contact || ''}</td>
+        <td>${donor.hospital || ''}</td>
+        <td>${donor.diseases || ''}</td>
+        <td>${donor.dob || ''}</td>
+        <td>${donor.status || 'Pending'}</td>
+        <td><button class="btn btn-approve" onclick="approveDonor('${key}')">Approve</button></td>
+        <td><button class="btn btn-reject" onclick="updateStatus('${key}','Rejected')">Reject</button></td>
+        <td><button class="btn btn-delete" onclick="deleteDonor('${key}')">Delete</button></td>
+      `;
+      tableBody.appendChild(row);
+    });
   });
+}
 
-  loadDonors();
+// Approve donor
+window.approveDonor = function(key) {
+  db.ref("donors/" + key).once("value").then(snapshot => {
+    const donor = snapshot.val();
+    if (donor) {
+      db.ref("donors/" + key + "/status").set("Approved");
+      db.ref("approvedDonors/" + key).set(donor)
+        .then(() => alert("Donor approved successfully!"))
+        .catch(err => alert("Error: " + err.message));
+    }
+  });
+};
+
+// Reject donor
+window.updateStatus = function(key, status) {
+  db.ref("donors/" + key + "/status").set(status)
+    .then(() => alert(`Donor ${status}`))
+    .catch((err) => alert("Error: " + err.message));
+};
+
+// Delete donor
+window.deleteDonor = function(key) {
+  if (confirm("Are you sure you want to delete this donor?")) {
+    db.ref("donors/" + key).remove()
+      .then(() => {
+        db.ref("approvedDonors/" + key).remove();
+        alert("Donor deleted successfully");
+      })
+      .catch((err) => alert("Error: " + err.message));
+  }
+};
+
+// Logout
+document.getElementById("logoutDonarPage").addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = "alert.html";
+});
+
+loadDonors();
 </script>
+
 </body>
 </html>

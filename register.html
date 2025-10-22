@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
   <title>Blood Bank - Donor Registration</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
   <style>
     body {
       background-color: #080710;
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
+      overflow-y: auto; /* Changed from hidden to auto to allow scroll */
+      overflow-x: hidden; /* Prevent horizontal overflow */
+      height: 100vh; /* Ensure body fills viewport height */
     }
     .background {
       width: 430px;
       height: 520px;
       position: absolute;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       left: 50%;
-      top: 50%;
+      top: 40px; /* Adjusted for better initial position */
     }
     .background .shape {
       height: 200px;
@@ -39,41 +40,79 @@
       bottom: -80px;
     }
     form {
-      height: 520px;
+      min-height: 650px;
       width: 400px;
-      background-color: rgba(255,255,255,0.13);
-      position: absolute;
-      transform: translate(-50%,-50%);
-      top: 50%;
-      left: 50%;
+      background-color: rgba(255, 255, 255, 0.13);
+      position: relative; /* Changed to relative so it scrolls naturally */
+      margin: 80px auto 40px auto; /* Center horizontally with spacing top and bottom */
       border-radius: 10px;
       backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 0 40px rgba(8,7,16,0.6);
-      padding: 30px 35px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+      padding: 35px 35px;
+      /* Added fade-in animation */
+      animation: fadeIn 1s ease both;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
     }
     form h3 {
       font-size: 28px;
       font-weight: 500;
       text-align: center;
       color: white;
+      margin-bottom: 10px;
+      width: 100%;
     }
-    input {
-      display: block;
+    .inputBox {
+      position: relative;
+      margin-top: 25px;
+      width: 100%;
+    }
+    .inputBox input {
       height: 45px;
       width: 100%;
-      background-color: rgba(255,255,255,0.07);
+      background-color: rgba(255, 255, 255, 0.07);
       border-radius: 3px;
-      padding: 0 10px;
-      margin-top: 15px;
+      padding: 8px 10px;
       font-size: 14px;
       color: white;
       border: none;
       outline: none;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
     }
-    ::placeholder { color: #e5e5e5; }
+    .inputBox label {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      pointer-events: none;
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 15px;
+      transition: 0.3s ease;
+    }
+    .inputBox label span {
+      display: inline-block;
+      transition: 0.3s ease;
+    }
+    :root {
+      --clr: #0ab3ff;
+    }
+    .inputBox input:focus ~ label span,
+    .inputBox input:valid ~ label span {
+      color: var(--clr);
+      letter-spacing: 0.15em;
+      transform: translateY(-18px);
+    }
+    .inputBox input:focus,
+    .inputBox input:valid {
+      border-bottom: 3px solid var(--clr);
+      box-shadow: 0 0 5px var(--clr);
+    }
     .submit {
-      margin-top: 25px;
+      margin-top: 30px;
       width: 50%;
       background-color: green;
       color: #fff;
@@ -82,13 +121,24 @@
       font-weight: 600;
       border-radius: 5px;
       cursor: pointer;
-      margin-left: 70px;
       border: none;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease;
+    }
+    .submit:hover {
+      background-color: green;
+    }
+    ::placeholder {
+      color: #e5e5e5;
+    }
+
+    /* Fade-in keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-
   <div class="background">
     <div class="shape"></div>
     <div class="shape"></div>
@@ -96,21 +146,46 @@
 
   <form id="donorForm">
     <h3>Register as Donor</h3>
-    <input type="text" placeholder="Name" id="name" required>
-    <input type="text" placeholder="Address" id="address" required>
-    <input type="email" placeholder="Email" id="email" required>
-    <input type="text" placeholder="Phone Number" id="number" required pattern="[6-9]{1}[0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9">
-    <input type="text" placeholder="Pin Code" id="pincode" required>
-    <input type="password" placeholder="Password" id="password" required>
-    <input type="submit" class="submit" value="Register"/>
+
+    <div class="inputBox">
+      <input type="text" id="name" required />
+      <label><span>Name</span></label>
+    </div>
+
+    <div class="inputBox">
+      <input type="text" id="address" required />
+      <label><span>Address</span></label>
+    </div>
+
+    <div class="inputBox">
+      <input type="email" id="email" required />
+      <label><span>Email</span></label>
+    </div>
+
+    <div class="inputBox">
+      <input type="text" id="number" required pattern="[6-9]{1}[0-9]{9}" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" />
+      <label><span>Phone Number</span></label>
+    </div>
+
+    <div class="inputBox">
+      <input type="text" id="pincode" required />
+      <label><span>Pin Code</span></label>
+    </div>
+
+    <div class="inputBox">
+      <input type="password" id="password" required />
+      <label><span>Password</span></label>
+    </div>
+
+    <input type="submit" class="submit" value="Register" />
   </form>
 
-  <!-- ✅ Firebase Libraries -->
+  <!-- Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // ✅ Firebase Configuration
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
       authDomain: "blood-donation-website-c7a25.firebaseapp.com",
@@ -121,15 +196,14 @@
       appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
     };
 
-    // ✅ Initialize Firebase
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ✅ Handle form submission
-    document.getElementById('donorForm').addEventListener('submit', function(e){
+    // Handle Form Submission
+    document.getElementById('donorForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Get form data
       const name = document.getElementById('name').value.trim();
       const address = document.getElementById('address').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -137,35 +211,42 @@
       const pincode = document.getElementById('pincode').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      // ✅ Validate phone number
-      if(!/^[6-9]\d{9}$/.test(number)) {
-        alert("⚠️ Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
+      if (!/^[6-9]\d{9}$/.test(number)) {
+        alert("Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.");
         return;
       }
 
-      // ✅ Save donor in 'pendingDonors' (not in 'donors')
       const donorData = {
-        name: name,
-        address: address,
-        email: email,
-        number: number,
-        pincode: pincode,
-        password: password,
-        status: "Pending"
+        name,
+        address,
+        email,
+        number,
+        pincode,
+        password,
+        createdAt: new Date().toISOString()
       };
 
-      db.ref("pendingDonors").push(donorData)  // 🔴 Changed node
-      .then(() => {
-        alert("✅ Registration submitted successfully! Awaiting admin approval.");
-        document.getElementById('donorForm').reset();
-        window.location.href = "login.html";
-      })
-      .catch((error) => {
-        console.error("Error saving data:", error);
-        alert("⚠️ Failed to register donor. Please try again.");
-      });
+      const newDonorRef = db.ref("pendingDonors").push();
+
+      newDonorRef.set(donorData)
+        .then(() => {
+          alert("Registration submitted successfully! Awaiting admin approval.");
+          document.getElementById('donorForm').reset();
+          window.location.href = "login.html";
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+          alert("Failed to register donor. Please try again.");
+        });
+    });
+
+    // Animated floating labels effect
+    document.querySelectorAll('label').forEach(label => {
+      label.innerHTML = label.innerText
+        .split('')
+        .map((letter, i) => `<span style="transition-delay:${i * 50}ms">${letter}</span>`)
+        .join('');
     });
   </script>
-
 </body>
 </html>

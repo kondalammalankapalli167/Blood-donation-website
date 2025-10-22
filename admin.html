@@ -4,47 +4,170 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blood Bank Admin Dashboard</title>
+
+<!-- Boxicons CDN -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
 <style>
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f1f1f1;color:#333;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background-color:#33bfa7;color:#fff;padding-top:20px;}
-.sidebar h2{text-align:center;margin-bottom:30px;font-weight:700;}
-.sidebar ul{list-style:none;padding-left:20px;}
-.sidebar ul li{margin-bottom:18px;font-size:17px;}
-.sidebar ul li a{color:white;text-decoration:none;display:block;}
-.sidebar ul li a:hover{text-decoration:underline;}
-.main{margin-left:220px;padding:20px 30px;}
-.header{font-weight:700;font-size:20px;display:flex;align-items:center;gap:12px;margin-bottom:18px;}
-.cards-container{display:flex;flex-direction:column;gap:20px;}
-.cards-row{display:flex;gap:16px;}
-.card{background:#ebebeb;border-radius:15px;width:120px;height:65px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:1px 1px 6px #bbb;font-weight:700;}
-.card .blood-group{color:purple;font-size:18px;}
-.card .blood-icon{color:#d30000;}
-.card .count{font-size:16px;font-weight:normal;}
-.info-row{margin-top:20px;display:flex;gap:14px;}
-.info-card{min-width:160px;height:65px;background:#ebebeb;border-radius:15px;font-weight:600;font-size:15px;display:flex;justify-content:center;align-items:center;box-shadow:1px 1px 6px #bbb;color:#222;cursor:pointer;}
-.info-card:hover{background:#d1e5e0;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f1f1f1;
+  color: #333;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  background-color:#33bfa7;
+  color: #fff;
+  padding-top: 20px;
+  overflow: hidden;
+  transition: width 0.4s ease;
+}
+.sidebar:hover {
+  width: 220px;
+}
+.sidebar h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+.sidebar ul {
+  list-style: none;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sidebar ul li {
+  border-radius: .5rem;
+  cursor: pointer;
+}
+.sidebar ul li:hover {
+  background-color: #33bfa7;
+}
+.sidebar ul li a {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  transition: background-color 0.2s;
+}
+.sidebar ul li a i {
+  font-size: 22px;
+  min-width: 30px;
+}
+.sidebar ul li a span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar:hover ul li a span {
+  opacity: 1;
+}
+
+/* Main dashboard area */
+.main {
+  margin-left: 70px;
+  padding: 20px 30px;
+  transition: margin-left 0.4s ease;
+}
+.sidebar:hover ~ .main {
+  margin-left: 220px;
+}
+.header {
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+/* Cards */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cards-row {
+  display: flex;
+  gap: 16px;
+}
+.card {
+  background: #ebebeb;
+  border-radius: 15px;
+  width: 120px;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1px 1px 6px #bbb;
+  font-weight: 700;
+}
+.card .blood-group {
+  color: purple;
+  font-size: 18px;
+}
+.card .blood-icon {
+  color: #d30000;
+}
+.card .count {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* Info cards */
+.info-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 14px;
+}
+.info-card {
+  min-width: 160px;
+  height: 65px;
+  background: #ebebeb;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1px 1px 6px #bbb;
+  color: #222;
+  cursor: pointer;
+}
+.info-card:hover {
+  background: #d1e5e0;
+}
 </style>
 </head>
+
 <body>
 
+<!-- Sidebar -->
 <nav class="sidebar">
   <h2>ADMIN</h2>
   <ul>
-    <li><a href="b.html">Home</a></li>
-    <li><a href="donar.html">Donor</a></li>
-        <li><a href="approved.html">Approve Donor</a></li>
-    
-    <li><a href="bloodrequests.html">Blood Request</a></li>
-    <li><a href="approvedetails.html">Approve Request</a></li>
-    <li><a href="#" id="logoutAdmin">Logout</a></li>
+    <li><a href="b.html"><i class='bx bxs-home'></i><span>Home</span></a></li>
+    <li><a href="donar.html"><i class='bx bx-user'></i><span>Donors</span></a></li>
+    <li><a href="approved.html"><i class='bx bx-check-circle'></i><span>Approve Donor</span></a></li>
+    <li><a href="bloodrequests.html"><i class='bx bx-droplet'></i><span>Blood Request</span></a></li>
+    <li><a href="approvedetails.html"><i class='bx bx-list-check'></i><span>Approve Request</span></a></li>
+    <li><a href="#" id="logoutAdmin"><i class='bx bx-log-out'></i><span>Logout</span></a></li>
   </ul>
 </nav>
 
+<!-- Main Area -->
 <div class="main">
-  <header class="header">
-    <span>BLOOD DASHBOARD</span>
-  </header>
+  <header class="header">BLOOD DASHBOARD</header>
 
   <div class="cards-container">
     <div class="cards-row" id="upperRow"></div>
@@ -52,110 +175,95 @@ body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background
   </div>
 
   <div class="info-row">
-    <div class="info-card">
-      Total Donors : <strong id="donorCount">0</strong>
-    </div>
-    <div class="info-card">
-      Total Requests : <strong id="requestCount">0</strong>
-    </div>
-    <div class="info-card" id="approvedCountCard" title="Click to view approved donors">
-      Approved Requests: <strong id="approvedCount">0</strong>
-    </div>
+    <div class="info-card">Total Donors: <strong id="donorCount">0</strong></div>
+    <div class="info-card">Total Requests: <strong id="requestCount">0</strong></div>
+    <div class="info-card" id="approvedCountCard">Approved Requests: <strong id="approvedCount">0</strong></div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // ✅ Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
-    authDomain: "blood-donation-website-c7a25.firebaseapp.com",
-    databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
-    projectId: "blood-donation-website-c7a25",
-    storageBucket: "blood-donation-website-c7a25.appspot.com",
-    messagingSenderId: "380005737107",
-    appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+  authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+  databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+  projectId: "blood-donation-website-c7a25",
+  storageBucket: "blood-donation-website-c7a25.appspot.com",
+  messagingSenderId: "380005737107",
+  appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+};
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const bloodGroups = ["A+","B+","O-","O+","AB+","AB-","A-","B-"];
 
-  const bloodGroups = ["A+","B+","O-","O+","AB+","AB-","A-","B-"];
+function createCard(type, count) {
+  const card = document.createElement("div");
+  card.className = "card";
+  const groupSpan = document.createElement("span");
+  groupSpan.className = "blood-group";
+  groupSpan.textContent = type;
+  const dropSpan = document.createElement("span");
+  dropSpan.className = "blood-icon";
+  dropSpan.textContent = "🩸";
+  const groupWrapper = document.createElement("div");
+  groupWrapper.style.display = "flex";
+  groupWrapper.style.alignItems = "center";
+  groupWrapper.style.justifyContent = "center";
+  groupWrapper.style.gap = "5px";
+  groupWrapper.appendChild(groupSpan);
+  groupWrapper.appendChild(dropSpan);
+  const countSpan = document.createElement("span");
+  countSpan.className = "count";
+  countSpan.textContent = count;
+  card.appendChild(groupWrapper);
+  card.appendChild(countSpan);
+  return card;
+}
 
-  function createCard(type, count){
-    const card = document.createElement("div");
-    card.className = "card";
-    const groupSpan = document.createElement("span");
-    groupSpan.className = "blood-group";
-    groupSpan.textContent = type;
-    const dropSpan = document.createElement("span");
-    dropSpan.className = "blood-icon";
-    dropSpan.textContent = "🩸";
-    const groupWrapper = document.createElement("div");
-    groupWrapper.style.display = "flex";
-    groupWrapper.style.alignItems = "center";
-    groupWrapper.style.justifyContent = "center";
-    groupWrapper.style.gap = "5px";
-    groupWrapper.appendChild(groupSpan);
-    groupWrapper.appendChild(dropSpan);
-    const countSpan = document.createElement("span");
-    countSpan.className = "count";
-    countSpan.textContent = count;
-    card.appendChild(groupWrapper);
-    card.appendChild(countSpan);
-    return card;
-  }
-
-  function renderDashboard(bloodData, donorCount){
-    document.getElementById("donorCount").textContent = donorCount;
-    const upperRow = document.getElementById("upperRow");
-    const lowerRow = document.getElementById("lowerRow");
-    upperRow.innerHTML = "";
-    lowerRow.innerHTML = "";
-    bloodGroups.forEach((type, index) => {
-      const count = bloodData[type] || 0;
-      const card = createCard(type, count);
-      if(index < 4){ upperRow.appendChild(card); }
-      else { lowerRow.appendChild(card); }
-    });
-  }
-
-  // 🔹 Count donors and show blood group distribution
-  db.ref("donors").on("value", snapshot => {
-    const donors = snapshot.val() || {};
-    const donorCount = Object.keys(donors).length;
-    let bloodData = {};
-    Object.values(donors).forEach(donor => {
-      const bg = donor.blood_group || donor.bloodGroup;
-      if(bg) bloodData[bg] = (bloodData[bg] || 0) + 1;
-    });
-    renderDashboard(bloodData, donorCount);
+function renderDashboard(bloodData, donorCount) {
+  document.getElementById("donorCount").textContent = donorCount;
+  const upperRow = document.getElementById("upperRow");
+  const lowerRow = document.getElementById("lowerRow");
+  upperRow.innerHTML = "";
+  lowerRow.innerHTML = "";
+  bloodGroups.forEach((type, index) => {
+    const count = bloodData[type] || 0;
+    const card = createCard(type, count);
+    if (index < 4) upperRow.appendChild(card);
+    else lowerRow.appendChild(card);
   });
+}
 
-  // 🔹 Count total blood requests
-  db.ref("bloodRequests").on("value", snapshot => {
-    const requests = snapshot.val() || {};
-    const totalRequests = Object.keys(requests).length;
-    document.getElementById("requestCount").textContent = totalRequests;
+db.ref("donors").on("value", snapshot => {
+  const donors = snapshot.val() || {};
+  const donorCount = Object.keys(donors).length;
+  let bloodData = {};
+  Object.values(donors).forEach(donor => {
+    const bg = donor.blood_group || donor.bloodGroup;
+    if (bg) bloodData[bg] = (bloodData[bg] || 0) + 1;
   });
+  renderDashboard(bloodData, donorCount);
+});
 
-  // 🔹 Count approved requests
-  db.ref("approvedRequests").on("value", snapshot => {
-    const approved = snapshot.val() || {};
-    const approvedCount = Object.keys(approved).length;
-    document.getElementById("approvedCount").textContent = approvedCount;
-  });
+db.ref("bloodRequests").on("value", snapshot => {
+  const requests = snapshot.val() || {};
+  document.getElementById("requestCount").textContent = Object.keys(requests).length;
+});
 
-  // 🔹 Logout
-  document.getElementById("logoutAdmin").addEventListener("click", (e) => {
-    e.preventDefault();
-    localStorage.clear();
-    window.location.href = "alert.html";
-  });
+db.ref("approvedRequests").on("value", snapshot => {
+  const approved = snapshot.val() || {};
+  document.getElementById("approvedCount").textContent = Object.keys(approved).length;
+});
+
+document.getElementById("logoutAdmin").addEventListener("click", e => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = "alert.html";
+});
 </script>
 </body>
 </html>
-

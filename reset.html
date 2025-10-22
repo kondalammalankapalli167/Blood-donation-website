@@ -1,93 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Reset Password</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #2d2d3f;
-        }
-        .reset-container {
-            background: #fff;
-            padding: 30px 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0px 4px 20px rgba(0,0,0,0.25);
-            width: 320px;
-        }
-        h2 {
-            margin-bottom: 18px;
-            color: #333;
-        }
-        input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-        button {
-            width: 94%;
-            padding: 12px 0;
-            margin-top: 14px;
-            background: #ffaa98;
-            color: #333;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #ff8c7a;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reset Password</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+      --clr: #0ab3ff;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1c2630;
+      overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    form {
+      background: #29313c;
+      padding: 60px 80px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      animation: fadeIn 1s ease both;
+    }
+
+    form h2 {
+      color: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 1.25em;
+      letter-spacing: 0.1em;
+      margin-bottom: 50px;
+    }
+
+    .inputBox {
+      position: relative;
+      width: 300px;
+      margin-bottom: 40px;
+    }
+
+    .inputBox input {
+      width: 100%;
+      padding: 10px 0;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #999;
+      outline: none;
+      color: white;
+      font-size: 1em;
+      letter-spacing: 0.15em;
+      transition: 0.3s;
+    }
+
+    .inputBox label {
+      position: absolute;
+      left: 0;
+      padding: 10px 0;
+      pointer-events: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      text-transform: uppercase;
+      transition: 0.3s ease;
+    }
+
+    .inputBox label span {
+      display: inline-block;
+      transition: 0.3s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .inputBox input:focus ~ label span,
+    .inputBox input:valid ~ label span {
+      letter-spacing: 0.15em;
+      transform: translateY(-25px);
+      color: var(--clr);
+    }
+
+    .inputBox input:focus,
+    .inputBox input:valid {
+      border-bottom: 3px solid var(--clr);
+    }
+
+    .inputBox input[type="submit"],
+    button {
+      background: var(--clr);
+      border: none;
+      padding: 15px;
+      border-radius: 50px;
+      color: #1c2630;
+      font-weight: 600;
+      font-size: 1.15em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: 0.5s;
+      box-shadow: 0 0 10px var(--clr);
+    }
+
+    .inputBox input[type="submit"]:hover,
+    button:hover {
+      letter-spacing: 0.35em;
+      box-shadow: 0 0 25px var(--clr);
+    }
+
+    .message {
+      color: #fff;
+      font-weight: bold;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .message.active {
+      opacity: 1;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="reset-container">
-        <h2>Reset Password</h2>
-        <form id="resetForm">
-            <input type="password" id="newPassword" placeholder="Enter new password" required />
-            <input type="password" id="confirmPassword" placeholder="Confirm new password" required />
-            <button type="submit">Update Password</button>
-        </form>
+  <form id="resetForm">
+    <h2>Reset Password</h2>
+    <div class="inputBox">
+      <input type="email" id="email" required />
+      <label>Email</label>
     </div>
+    <div class="inputBox">
+      <input type="password" id="newPassword" required />
+      <label>New Password</label>
+    </div>
+    <div class="inputBox">
+      <input type="password" id="confirmPassword" required />
+      <label>Confirm Password</label>
+    </div>
+    <div class="inputBox">
+      <input type="submit" id="submitBtn" value="Reset Password" />
+    </div>
+    <div class="message" id="message"></div>
+  </form>
 
-    <script>
-        document.getElementById('resetForm').addEventListener('submit', function(e){
-            e.preventDefault();
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const resetEmail = localStorage.getItem('resetEmail');
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+      authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+      databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com/",
+      projectId: "blood-donation-website-c7a25",
+      storageBucket: "blood-donation-website-c7a25.appspot.com",
+      messagingSenderId: "380005737107",
+      appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-            if(newPassword !== confirmPassword){
-                alert("Passwords do not match!");
-                return;
-            }
+    const form = document.getElementById('resetForm');
+    const message = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
 
-            if(resetEmail){
-                if(resetEmail === localStorage.getItem('registeredEmail')){
-                    localStorage.setItem('registeredPassword', newPassword);
-                } else if(resetEmail === localStorage.getItem('adminEmail')){
-                    localStorage.setItem('adminPassword', newPassword);
-                }
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      message.classList.add('active');
+      message.style.color = 'red';
+      message.textContent = '';
 
-                alert("Password successfully updated for " + resetEmail + ". Please login again.");
-                localStorage.removeItem('resetEmail');
-                window.location.href = "login.html";
-            } else {
-                alert("No email found for reset process.");
-            }
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const newPassword = document.getElementById('newPassword').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+      if (!email || !newPassword || !confirmPassword) {
+        message.textContent = "All fields are required.";
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        return;
+      }
+
+      message.style.color = 'white';
+      message.textContent = "Checking email...";
+      submitBtn.disabled = true;
+
+      db.ref("pendingDonors")
+        .orderByChild("email")
+        .equalTo(email)
+        .once("value")
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+              childSnapshot.ref.update({ password: newPassword });
+            });
+            message.style.color = 'lightgreen';
+            message.textContent = "Password reset successfully!";
+            form.reset();
+          } else {
+            message.textContent = "Email not found. Please register first.";
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          message.textContent = "Something went wrong. Try again.";
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
         });
-    </script>
+    });
+
+    // Animated floating labels
+    document.querySelectorAll('label').forEach(label => {
+      label.innerHTML = label.innerText
+        .split('')
+        .map((letter, i) => `<span style="transition-delay:${i * 50}ms">${letter}</span>`)
+        .join('');
+    });
+  </script>
 </body>
 </html>

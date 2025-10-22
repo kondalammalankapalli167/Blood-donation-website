@@ -4,16 +4,31 @@
   <meta charset="UTF-8" />
   <title>Blood Bank</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background: url('blood.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
     .navbar {
-      background: #fff;
+      background: rgba(41,41,60,0.3);
       box-shadow: 0 2px 5px #eee;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 30px;
+      backdrop-filter: blur(4px);
     }
-    .logo { font-weight: bold; color: #d80000; }
+    .logo {
+      font-weight: bold;
+      color: #d80000;
+    }
     .navbar ul {
       list-style: none;
       display: flex;
@@ -21,7 +36,9 @@
       padding: 0;
       margin: 0;
     }
-    .navbar ul li { display: inline; }
+    .navbar ul li {
+      display: inline;
+    }
     .navbar ul a {
       text-decoration: none;
       color: #222;
@@ -44,7 +61,9 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .logout-btn:hover { background: #d80000; }
+    .logout-btn:hover {
+      background: #d80000;
+    }
     .center-banner {
       text-align: center;
       margin-top: 30px;
@@ -64,21 +83,20 @@
       <li><a href="a.html" class="active">Home</a></li>
       <li><a href="donate.html">Donate</a></li>
       <li><a href="request.html">Request</a></li>
-          <li><a href="admin.html">Admin</a></li>
+      <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
 
   <div class="center-banner">
-    <img src="https://joyalukkasindia.wordpress.com/wp-content/uploads/2017/06/save-a-life-give-blood-joyalukkas.jpg" alt="Save a Life, Give Blood" />
+    <!-- Add a relevant image or content here if needed -->
+    <!-- Example: <img src="your-banner.jpg" alt="Blood Donation Banner"> -->
   </div>
 
   <script>
     document.getElementById('logoutBtn').addEventListener('click', function() {
-      // Remove saved email & password
       localStorage.removeItem('registeredEmail');
       localStorage.removeItem('registeredPassword');
-      // Redirect to alert page
       window.location.href = "alert.html";
     });
   </script>

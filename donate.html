@@ -19,13 +19,13 @@
       width: 100vw;
       height: 100vh;
       z-index: -2;
-      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80')
+      background: url('cloud.jpg')
                   center center/cover no-repeat;
     }
 
     /* Form hidden */
     .form-container {
-      display: Flex/* 馃憟 Makes the form invisible */
+      display: Flex/*  Makes the form invisible */
       min-width: 340px;
       width: 340px;
       margin: 40px auto;
@@ -131,12 +131,12 @@
     </form>
   </div>
 
-  <!-- 鉁� Firebase Realtime Database Integration -->
+  <!--Firebase Realtime Database Integration -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    // 馃敟 Firebase Configuration
+    //  Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
       authDomain: "blood-donation-website-c7a25.firebaseapp.com",
@@ -170,13 +170,13 @@
 
       const contact = form.contact.value.trim();
       if (!/^[6-9]\d{9}$/.test(contact)) {
-        alert("鈿狅笍 Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9.");
+        alert(" Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9.");
         return;
       }
 
       const age = calculateAge(form.dob.value);
       if (age < 18) {
-        alert("鈿狅笍 Age must be 18 or older to donate blood.");
+        alert(" Age must be 18 or older to donate blood.");
         return;
       }
 
@@ -193,17 +193,17 @@
 
       db.ref("donors").push(donor)
         .then(() => {
-          alert("鉁� Successfully Registered!");
+          alert(" Successfully Registered!");
           form.reset();
           form.blood_group.selectedIndex = 0;
         })
         .catch((error) => {
           console.error("Error adding donor:", error);
-          alert("鈿狅笍 Failed to register donor. Please try again.");
+          alert(" Failed to register donor. Please try again.");
         });
     });
 
-    // 馃攧 Optional: To show the form later
+    // Optional: To show the form later
     // document.getElementById("formContainer").style.display = "block";
   </script>
 </body>

@@ -1,94 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Approved Blood Requests</title>
-  <style>
-    body { margin:0; font-family:Arial,sans-serif; background:#f8f9fa; }
-    .sidebar { position:fixed; top:0; left:0; width:200px; height:100%; background:#2ab7a9; color:white; padding-top:20px; }
-    .sidebar h2 { text-align:center; margin-bottom:30px; }
-    .sidebar ul { list-style:none; padding-left:0; }
-    .sidebar ul li { padding:12px 20px; cursor:pointer; }
-    .sidebar ul li:hover { background:#219085; }
-    .sidebar ul li a { color:white; text-decoration:none; display:block; }
-    .main { margin-left:200px; padding:20px; }
-    table { width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    th, td { padding:10px; border:1px solid #ddd; text-align:center; }
-    th { background:#efefef; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Approved Blood Requests</title>
+
+<!-- Boxicons CDN -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 60px;
+  height: 100vh;
+  background-color:#33bfa7;
+  color: #fff;
+  padding: 20px 0;
+  overflow: hidden;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.4s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.sidebar:hover {
+  width: 200px;
+}
+.sidebar h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar:hover h2 {
+  opacity: 1;
+}
+.sidebar ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 0;
+}
+.sidebar ul li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+.sidebar ul li:hover {
+  background-color: #33bfa7;
+}
+.sidebar ul li a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.sidebar ul li a i {
+  font-size: 22px;
+  min-width: 30px;
+}
+.sidebar ul li a span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding-left: 8px;
+}
+.sidebar:hover ul li a span {
+  opacity: 1;
+}
+
+/* Main section */
+.main {
+  margin-left: 60px;
+  padding: 20px;
+  width: 100%;
+  transition: margin-left 0.4s ease;
+}
+.sidebar:hover ~ .main {
+  margin-left: 200px;
+}
+
+/* Table Styling */
+h2 {
+  margin-bottom: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 5px;
+  overflow: hidden;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+th {
+  background: #33bfa7;
+  color: white;
+}
+</style>
 </head>
+
 <body>
-  <div class="sidebar">
-    <h2>Admin</h2>
-    <ul>
-      <li><a href="admin.html">Home</a></li>
-      <li><a href="bloodrequests.html">Blood Requests</a></li>
-      <li><a href="#" id="logoutApproved">Logout</a></li>
-    </ul>
-  </div>
 
-  <div class="main">
-    <h2>Approved Blood Requests</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Patient Name</th>
-          <th>Hospital</th>
-          <th>Blood Type</th>
-          <th>Blood Unit</th>
-        </tr>
-      </thead>
-      <tbody id="approvedTableBody"></tbody>
-    </table>
-  </div>
+<div class="sidebar">
+  <h2>Admin</h2>
+  <ul>
+    <li><a href="admin.html"><i class='bx bxs-home'></i><span>Home</span></a></li>
+    <li><a href="bloodrequests.html"><i class='bx bx-droplet'></i><span>Blood Requests</span></a></li>
+    <li><a href="approvedetails.html"><i class='bx bx-check-circle'></i><span>Approved Requests</span></a></li>
+    <li><a href="#" id="logoutApproved"><i class='bx bx-log-out'></i><span>Logout</span></a></li>
+  </ul>
+</div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<div class="main">
+  <h2>Approved Blood Requests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Hospital</th>
+        <th>Blood Type</th>
+        <th>Blood Unit</th>
+      </tr>
+    </thead>
+    <tbody id="approvedTableBody"></tbody>
+  </table>
+</div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
-      authDomain: "blood-donation-website-c7a25.firebaseapp.com",
-      databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
-      projectId: "blood-donation-website-c7a25",
-      storageBucket: "blood-donation-website-c7a25.appspot.com",
-      messagingSenderId: "380005737107",
-      appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
-    };
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<script>
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
+  authDomain: "blood-donation-website-c7a25.firebaseapp.com",
+  databaseURL: "https://blood-donation-website-c7a25-default-rtdb.firebaseio.com",
+  projectId: "blood-donation-website-c7a25",
+  storageBucket: "blood-donation-website-c7a25.appspot.com",
+  messagingSenderId: "380005737107",
+  appId: "1:380005737107:web:89a7bbe5f5a16ac7a8a366"
+};
 
-    function loadApprovedRequests() {
-      const tbody = document.getElementById("approvedTableBody");
-      db.ref("approvedRequests").on("value", snapshot => {
-        const approved = snapshot.val();
-        tbody.innerHTML = "";
-        if (!approved) {
-          tbody.innerHTML = "<tr><td colspan='4'>No approved requests found.</td></tr>";
-          return;
-        }
-        Object.values(approved).forEach(req => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${req.patient || ''}</td>
-            <td>${req.hospital || ''}</td>
-            <td>${req.blood || ''}</td>
-            <td>${req.unit || ''}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      });
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Load Approved Requests
+function loadApprovedRequests() {
+  const tbody = document.getElementById("approvedTableBody");
+
+  db.ref("approvedRequests").on("value", snapshot => {
+    const approved = snapshot.val();
+    tbody.innerHTML = "";
+    if (!approved) {
+      tbody.innerHTML = "<tr><td colspan='4'>No approved requests found.</td></tr>";
+      return;
     }
 
-    document.getElementById("logoutApproved").addEventListener("click", e => {
-      e.preventDefault();
-      window.location.href = "alert.html";
+    Object.values(approved).forEach(req => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${req.patient || ''}</td>
+        <td>${req.hospital || ''}</td>
+        <td>${req.blood || ''}</td>
+        <td>${req.unit || ''}</td>
+      `;
+      tbody.appendChild(row);
     });
+  });
+}
 
-    loadApprovedRequests();
-  </script>
+// Logout Function
+document.getElementById("logoutApproved").addEventListener("click", e => {
+  e.preventDefault();
+  window.location.href = "alert.html";
+});
+
+loadApprovedRequests();
+</script>
+
 </body>
 </html>

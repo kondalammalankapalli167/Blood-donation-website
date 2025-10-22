@@ -4,72 +4,123 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Approved Donors</title>
+<!-- Boxicons CDN -->
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f8f9fa;
-  }
-  .sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 200px;
-    height: 100%;
-    background: #2ab7a9;
-    color: white;
-    padding-top: 20px;
-  }
-  .sidebar h2 {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .sidebar ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  .sidebar ul li {
-    padding: 12px 20px;
-    cursor: pointer;
-  }
-  .sidebar ul li:hover {
-    background: #219085;
-  }
-  .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-  }
-  .main {
-    margin-left: 200px;
-    padding: 20px;
-  }
-  h2 {
-    margin-bottom: 20px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0px 2px 6px #ccc;
-  }
-  th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-  }
-  th {
-    background: #efefef;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fa;
+  display: flex;
+}
+.sidebar {
+  width: 60px;
+  height: 100vh;
+  background-color: #33bfa7;
+  color: #fff;
+  padding: 20px 0;
+  overflow: hidden;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.4s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.sidebar:hover {
+  width: 200px;
+}
+.sidebar h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar:hover h2 {
+  opacity: 1;
+}
+.sidebar ul {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 0;
+}
+.sidebar ul li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+.sidebar ul li:hover {
+  background-color: #33bfa7;
+}
+.sidebar ul li a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.sidebar ul li a i {
+  font-size: 22px;
+  min-width: 30px;
+}
+.sidebar ul li a span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding-left: 8px;
+}
+.sidebar:hover ul li a span {
+  opacity: 1;
+}
+
+.main {
+  margin-left: 60px;
+  padding: 20px;
+  width: 100%;
+  transition: margin-left 0.4s ease;
+}
+.sidebar:hover ~ .main {
+  margin-left: 200px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0px 2px 6px #ccc;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+th {
+  background: #33bfa7;
+}
 </style>
 </head>
 <body>
 <div class="sidebar">
   <h2>Admin</h2>
   <ul>
-    <li><a href="admin.html">Home</a></li>
-    <li><a href="donar.html">Donor</a></li>
-    <li><a href="approved.html">Approved Donors</a></li>
-    <li><a href="#" id="logoutApproved">Logout</a></li>
+    <li><a href="admin.html"><i class='bx bxs-home'></i><span>Home</span></a></li>
+    <li><a href="donar.html"><i class='bx bx-user'></i><span>Donor</span></a></li>
+    <li><a href="approved.html"><i class='bx bx-check-circle'></i><span>Approved Donors</span></a></li>
+    <li><a href="#" id="logoutApproved"><i class='bx bx-log-out'></i><span>Logout</span></a></li>
   </ul>
 </div>
 
@@ -94,7 +145,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  // 🔥 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyDYH9xybMpLnYvNQiNt-SBc9Kk-0pYTm7w",
     authDomain: "blood-donation-website-c7a25.firebaseapp.com",
@@ -109,7 +159,6 @@
 
   const tableBody = document.querySelector("#approvedTable tbody");
 
-  // 🔹 Load only approved donors
   function loadApprovedDonors() {
     tableBody.innerHTML = "";
     db.ref("approvedDonors").on("value", (snapshot) => {
@@ -135,7 +184,6 @@
     });
   }
 
-  // 🚪 Logout
   document.getElementById("logoutApproved").addEventListener("click", (e) => {
     e.preventDefault();
     localStorage.clear();
